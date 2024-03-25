@@ -1,0 +1,78 @@
+#bg_body {
+    background-image: linear-gradient(to right, rgba(128, 128, 128, 1), rgba(16, 116, 12, 1));
+}
+
+#input_card_header {
+    background-color: #cfc9c9;
+}
+
+button#strava_auth {
+    background-color: #FC4C02;
+}
+
+div#modal_info_header.modal-header {
+    background-color: #cfc9c9;
+}
+
+div#loadingModalContent.modal-content{
+    background-color: #3498db;
+}
+
+/* Styles for drag and drop area */
+#drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    padding: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  #drop-area.highlight {
+    border-color: purple;
+  }
+
+#mapFrame {
+    border: 1px solid #3498db;
+}
+
+.custom-tooltip .tooltip-inner {
+    width: 500px;
+    max-width: 100%;
+    background-color: rgb(126, 180, 224);
+    color: black;
+    border: 2px solid black;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.tab-content,
+.tab-pane {
+    background-color: inherit;
+}
+
+#loadingModal .modal .modal-content {
+    display: none;
+    background-color: #46aeeb;
+}
+
+@keyframes moveBike {
+    0% {
+        left: 0;
+    }
+
+    100% {
+        left: calc(100% - 50px);
+    }
+}
+
+.bike-moving {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    animation: moveBike 4s linear infinite;
+}
+
+.modal-body {
+    position: relative;
+}

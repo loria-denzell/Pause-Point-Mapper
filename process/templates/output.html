@@ -1,0 +1,46 @@
+{% if info %}
+<div class="row card-deck align-items-stretch mt-4 mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header text-center" id="input_card_header">
+                <strong><i class="fa fa-file" style="font-size:20px"></i>&nbsp;STATISTICS</strong>
+            </div>
+            <div class="card-body bg-light text-dark">
+                <div class="row">
+                    <table class="table table-sm table-bordered table-striped table-hover">
+                        <thead>
+                            <tr class="table-active">
+                                <th scope="col">INFORMATION</th>
+                                <th scope="col">DATA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table_statistics">
+                            {% for key, item in info.items %}
+                            {% if 'description' in item %}
+                            <tr>
+                                <th>{{ item.description }}</th>
+                                <td>{{ item.val|slice:":50" }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="text-center">
+                        <a href="#" id="downloadMapHtmlBtn" download="map.html">
+                            <button class="btn btn-success btn-block">
+                                <i class="fa fa-download" style="font-size:20px"></i>&nbsp;DOWNLOAD MAP OUTPUT
+                            </button>
+                        </a>
+                    </div>
+                    <div class="iframe-container mt-3 mb-3" id="mapFrame" ata-bs-toggle="tooltip"
+                        data-bs-placement="top" title="Custom Tooltip">
+                        {{ info.map_html|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
