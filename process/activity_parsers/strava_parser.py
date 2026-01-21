@@ -87,17 +87,41 @@ def fetch_strava_activity_streams(access_token, activity_id, data_dict):
     headers = {SUBKEY_AUTHORIZATION: 'Bearer ' + access_token}
     params = {'keys': ','.join(stream_types)}
     result = get_response(streams_url, headers, params, {})
+
+    def _extract_data(container, typ):
+        # container may be a list of stream objects or a dict-like mapping
+        if isinstance(container, list):
+            for item in container:
+                if isinstance(item, dict) and item.get('type') == typ:
+                    return item.get(KEY_DATA, [])
+        elif isinstance(container, dict):
+            # container might already be a mapping of type->data or type->object
+            maybe = container.get(typ)
+            if isinstance(maybe, dict) and KEY_DATA in maybe:
+                return maybe.get(KEY_DATA, [])
+            if isinstance(maybe, list):
+                return maybe
+        return []
+
+    time_list = _extract_data(result, 'time')
+    distance_list = _extract_data(result, SUBKEY_DISTANCE)
+    latlng_list = _extract_data(result, 'latlng')
+    altitude_list = _extract_data(result, 'altitude')
+
     trackpoint_id = 0
     datetime_started = data_dict[KEY_DICT_INFO][8][SUBKEY_DICT_VAL]
     data_dict[KEY_DICT_INFO][8][SUBKEY_DICT_VAL] = data_dict[KEY_DICT_INFO][8][SUBKEY_DICT_VAL].strftime(FORMAT_TIME)
-    
-    for data in zip(result[0][KEY_DATA], result[1][KEY_DATA], result[2][KEY_DATA], result[3][KEY_DATA]):
+
+    # iterate until the shortest stream length
+    for t, d, ll, a in zip(time_list, distance_list, latlng_list, altitude_list):
+        # latlng entries are expected as [lat, lng]
+        lat, lng = (ll[0], ll[1]) if isinstance(ll, (list, tuple)) and len(ll) >= 2 else (None, None)
         data_dict[trackpoint_id] = {
-            SUBKEY_LATITUDE: data[0][0],
-            SUBKEY_LONGITUDE: data[0][1],
-            SUBKEY_DISTANCE: data[1],
-            SUBKEY_ELEVATION: data[2],
-            SUBKEY_DATETIME: datetime_started+timedelta(seconds=data[3]) 
+            SUBKEY_LATITUDE: lat,
+            SUBKEY_LONGITUDE: lng,
+            SUBKEY_DISTANCE: d,
+            SUBKEY_ELEVATION: a,
+            SUBKEY_DATETIME: datetime_started + timedelta(seconds=t)
         }
         trackpoint_id += 1
     return data_dict
